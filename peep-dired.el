@@ -76,16 +76,16 @@
 (defun peep-dired-next-file ()
   (interactive)
   (dired-next-line 1)
-  (peep-dired-display-file-other-window)
   (when peep-dired-cleanup-eagerly
-    (peep-dired-cleanup)))
+    (peep-dired-cleanup))
+  (peep-dired-display-file-other-window))
 
 (defun peep-dired-prev-file ()
   (interactive)
   (dired-previous-line 1)
-  (peep-dired-display-file-other-window)
   (when peep-dired-cleanup-eagerly
-    (peep-dired-cleanup)))
+    (peep-dired-cleanup))
+  (peep-dired-display-file-other-window))
 
 (defun peep-dired-kill-buffers-without-window ()
   "Will kill all peep buffers that are not displayed in any window"
@@ -105,10 +105,11 @@
 
 (defun peep-dired-display-file-other-window ()
   (let ((entry-name (dired-file-name-at-point)))
-    (unless (or (member (file-name-extension entry-name)
-                        peep-dired-ignored-extensions)
-                (> (nth 7 (file-attributes entry-name))
-                   peep-dired-max-size))
+    (unless (or (not entry-name)
+             (member (file-name-extension entry-name)
+                     peep-dired-ignored-extensions)
+             (> (nth 7 (file-attributes entry-name))
+                peep-dired-max-size))
       (add-to-list 'peep-dired-peeped-buffers
                    (window-buffer
                     (display-buffer
